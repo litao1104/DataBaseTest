@@ -3,8 +3,10 @@ package com.example.databasetest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -66,6 +68,30 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 db.delete("Book", "pages > ?", new String[] {"500"});
+            }
+        });
+
+        Button queryData = (Button) findViewById(R.id.query_data);
+        queryData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                Cursor cursor = db.query("Book", null, null, null, null, null, null);
+                if (cursor.moveToFirst()) {
+                    do {
+                        String name = cursor.getString(cursor.getColumnIndex("name"));
+                        String author = cursor.getString(cursor.getColumnIndex("author"));
+                        int pages = cursor.getInt(cursor.getColumnIndex("pages"));
+                        float price = cursor.getFloat(cursor.getColumnIndex("price"));
+
+                        Log.d("MainActivity", "Book name is " + name);
+                        Log.d("MainActivity", "Book author is " + author);
+                        Log.d("MainActivity", "Book pages is " + pages);
+                        Log.d("MainActivity", "Book price is " + price);
+                        Log.d("MainActivity", "\r\n");
+                    } while(cursor.moveToNext());
+                }
+                cursor.close();
             }
         });
     }
