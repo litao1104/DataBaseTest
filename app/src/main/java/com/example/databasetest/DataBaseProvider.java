@@ -42,6 +42,23 @@ public class DataBaseProvider extends ContentProvider {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int deletedRows = 0;
 
+        switch (uriMatcher.match(uri)) {
+            case BOOK_DIR:
+                deletedRows = db.delete("Book", selection, selectionArgs);
+                break;
+            case BOOK_ITEM:
+                String bookId = uri.getPathSegments().get(1);
+                deletedRows = db.delete("Book", "id = ?", new String[] {bookId});
+                break;
+            case CATEGORY_DIR:
+                deletedRows = db.delete("Category", selection, selectionArgs);
+                break;
+            case CATEGORY_ITEM:
+                String categoryId = uri.getPathSegments().get(1);
+                deletedRows = db.delete("Category", "id = ?", new String[] {categoryId});
+                break;
+        }
+
         return deletedRows;
     }
 
@@ -49,7 +66,20 @@ public class DataBaseProvider extends ContentProvider {
     public String getType(Uri uri) {
         // TODO: Implement this to handle requests for the MIME type of the data
         // at the given URI.
-        throw new UnsupportedOperationException("Not yet implemented");
+        //throw new UnsupportedOperationException("Not yet implemented");
+
+        switch (uriMatcher.match(uri)) {
+            case BOOK_DIR:
+                return "vnd.android.cursor.dir/vnd.com.example.databasetest.provider.book";
+            case BOOK_ITEM:
+                return "vnd.android.cursor.item/vnd.com.example.databasetest.provider.book";
+            case CATEGORY_DIR:
+                return "vnd.android.cursor.dir/vnd.com.example.databasetest.provider.category";
+            case CATEGORY_ITEM:
+                return "vnd.android.cursor.item/vnd.com.example.databasetest.provider.category";
+        }
+
+        return null;
     }
 
     @Override

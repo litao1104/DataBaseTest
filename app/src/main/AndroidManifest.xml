@@ -12,6 +12,7 @@
         <provider
             android:name=".DataBaseProvider"
             android:authorities="com.example.databasetest.provider"
+            android:permission="com.example.databasetest"
             android:enabled="true"
             android:exported="true"></provider>
 
